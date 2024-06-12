@@ -54,7 +54,7 @@ const size_t BLOCK_CAPACITY = 4;
  *  This gives the upper limit of the size of a key that may be stored in the
  *  B-tree.
  */
-#define GLASS_BTREE_MAX_KEY_LEN 255
+#define GLASS_BTREE_MAX_KEY_LEN 2048
 
 // FIXME: This named constant probably isn't used everywhere it should be...
 const int BYTES_PER_BLOCK_NUMBER = 4;
@@ -69,7 +69,7 @@ const int BYTES_PER_BLOCK_NUMBER = 4;
        X2      the 2 byte component counter that ends each key
 */
 
-const int K1 = 1;
+const int K1 = 2;
 const int I2 = 2;
 const int D2 = 2;
 const int X2 = 2;
@@ -108,17 +108,17 @@ const int X2 = 2;
 */
 
 inline uint4 REVISION(const uint8_t * b) { return aligned_read4(b); }
-inline int GET_LEVEL(const uint8_t * b) { return b[4]; }
-inline int MAX_FREE(const uint8_t * b) { return unaligned_read2(b + 5); }
-inline int TOTAL_FREE(const uint8_t * b) { return unaligned_read2(b + 7); }
-inline int DIR_END(const uint8_t * b) { return unaligned_read2(b + 9); }
-const int DIR_START = 11;
+inline int GET_LEVEL(const uint8_t * b) { return b[5]; }
+inline int MAX_FREE(const uint8_t * b) { return unaligned_read2(b + 6); }
+inline int TOTAL_FREE(const uint8_t * b) { return unaligned_read2(b + 8); }
+inline int DIR_END(const uint8_t * b) { return unaligned_read2(b + 10); }
+const int DIR_START = 12;
 
 inline void SET_REVISION(uint8_t * b, uint4 rev) { aligned_write4(b, rev); }
-inline void SET_LEVEL(uint8_t * b, int x) { AssertRel(x,<,256); b[4] = x; }
-inline void SET_MAX_FREE(uint8_t * b, int x) { unaligned_write2(b + 5, x); }
-inline void SET_TOTAL_FREE(uint8_t * b, int x) { unaligned_write2(b + 7, x); }
-inline void SET_DIR_END(uint8_t * b, int x) { unaligned_write2(b + 9, x); }
+inline void SET_LEVEL(uint8_t * b, int x) { AssertRel(x,<,256); b[5] = x; }
+inline void SET_MAX_FREE(uint8_t * b, int x) { unaligned_write2(b + 6, x); }
+inline void SET_TOTAL_FREE(uint8_t * b, int x) { unaligned_write2(b + 8, x); }
+inline void SET_DIR_END(uint8_t * b, int x) { unaligned_write2(b + 10, x); }
 
 // The item size is stored in 2 bytes, but the top bit is used to store a flag for
 // "is the tag data compressed" and the next two bits are used to flag if this is the
@@ -147,7 +147,7 @@ class Key {
 	key->assign(reinterpret_cast<const char *>(p + K1), length());
     }
     int length() const {
-	return p[0];
+	return *((const short*)p);
     }
     char operator[](size_t i) const {
 	AssertRel(i,<,size_t(length()));
@@ -160,7 +160,7 @@ class Key {
 template<class T> class LeafItem_base {
   protected:
     T p;
-    int get_key_len() const { return p[I2]; }
+    int get_key_len() const { return *(short*)(p + I2); }
     static int getD(const uint8_t * q, int c) {
 	AssertRel(c, >=, DIR_START);
 	AssertRel(c, <, 65535);
@@ -219,7 +219,7 @@ class LeafItem_wr : public LeafItem_base<uint8_t *> {
     void set_key_len(int x) {
 	AssertRel(x, >=, 0);
 	AssertRel(x, <=, GLASS_BTREE_MAX_KEY_LEN);
-	p[I2] = x;
+	*(short*)(p + I2) = x;
     }
     void setI(int x) { unaligned_write2(p, x); }
     static void setX(uint8_t * q, int c, int x) { unaligned_write2(q + c, x); }
@@ -302,7 +302,7 @@ class LeafItem_wr : public LeafItem_base<uint8_t *> {
 template<class T> class BItem_base {
   protected:
     T p;
-    int get_key_len() const { return p[BYTES_PER_BLOCK_NUMBER]; }
+    int get_key_len() const { return *(const short*)(p + BYTES_PER_BLOCK_NUMBER); }
     static int getD(const uint8_t * q, int c) {
 	AssertRel(c, >=, DIR_START);
 	AssertRel(c, <, 65535);
@@ -342,7 +342,7 @@ class BItem_wr : public BItem_base<uint8_t *> {
     void set_key_len(int x) {
 	AssertRel(x, >=, 0);
 	AssertRel(x, <, GLASS_BTREE_MAX_KEY_LEN);
-	p[BYTES_PER_BLOCK_NUMBER] = x;
+	*(short*)(p + BYTES_PER_BLOCK_NUMBER) = x;
     }
     static void setX(uint8_t * q, int c, int x) { unaligned_write2(q + c, x); }
   public:

@@ -673,7 +673,7 @@ GlassTable::enter_key_above_leaf(LeafItem previtem, LeafItem newitem)
     if (i < newkey_len) i++;
 
     // Enough space for a branch item with maximum length key.
-    uint8_t b[BYTES_PER_BLOCK_NUMBER + K1 + 255 + X2];
+    uint8_t b[BYTES_PER_BLOCK_NUMBER + K1 + GLASS_BTREE_MAX_KEY_LEN + X2];
     BItem_wr item(b);
     AssertRel(i, <=, 255);
     item.set_truncated_key_and_block(newkey, new_comp, i, blocknumber);
@@ -714,7 +714,7 @@ GlassTable::enter_key_above_branch(int j, BItem newitem)
     uint4 blocknumber = C[j - 1].get_n();
 
     // Enough space for a branch item with maximum length key.
-    uint8_t b[BYTES_PER_BLOCK_NUMBER + K1 + 255 + X2];
+    uint8_t b[BYTES_PER_BLOCK_NUMBER + K1 + GLASS_BTREE_MAX_KEY_LEN + X2];
     BItem_wr item(b);
     item.set_key_and_block(newitem.key(), blocknumber);
 
