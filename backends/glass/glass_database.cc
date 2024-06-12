@@ -1010,6 +1010,10 @@ GlassDatabase::locked() const
     return lock.test();
 }
 
+bool GlassDatabase::CS_get_exact_entry(const std::string & key, std::string & tag) const {
+    return docdata_table.get_exact_entry(key, tag);
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 GlassWritableDatabase::GlassWritableDatabase(const string &dir, int flags,
@@ -1033,6 +1037,10 @@ GlassWritableDatabase::~GlassWritableDatabase()
 {
     LOGCALL_DTOR(DB, "GlassWritableDatabase");
     dtor_called();
+}
+
+void GlassWritableDatabase::CS_add(const std::string& key, const std::string& tag) {
+    docdata_table.add(key, tag);
 }
 
 void

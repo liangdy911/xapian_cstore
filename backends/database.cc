@@ -98,6 +98,15 @@ Database::Internal::dtor_called()
     }
 }
 
+bool Database::Internal::CS_get_exact_entry(const std::string&, std::string&) const {
+    Assert(false);
+    return false;
+}
+
+void Database::Internal::CS_add(const std::string&, const std::string& ) {
+	Assert(false);
+}
+
 void
 Database::Internal::commit()
 {

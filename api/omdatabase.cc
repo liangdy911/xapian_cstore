@@ -822,6 +822,10 @@ Database::get_revision() const
     return revision;
 }
 
+bool Database::CS_get_exact_entry(const std::string & key, std::string & tag) const {
+	return internal[0]->CS_get_exact_entry(key, tag);
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 WritableDatabase::WritableDatabase() : Database()
@@ -851,6 +855,13 @@ WritableDatabase::operator=(const WritableDatabase &other)
 WritableDatabase::~WritableDatabase()
 {
     LOGCALL_DTOR(API, "WritableDatabase");
+}
+
+void WritableDatabase::CS_add(const std::string& key, const std::string& tag)
+{
+    size_t n_dbs = internal.size();
+    for (size_t i = 0; i != n_dbs; ++i)
+		internal[i]->CS_add(key, tag);
 }
 
 void

@@ -14286,7 +14286,7 @@ if test $ac_test_CXXFLAGS; then
   CXXFLAGS=$ac_save_CXXFLAGS
 elif test $ac_cv_prog_cxx_g = yes; then
   if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
+    CXXFLAGS="-g -O0"
   else
     CXXFLAGS="-g"
   fi

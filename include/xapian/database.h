@@ -152,6 +152,8 @@ class XAPIAN_VISIBILITY_DEFAULT Database {
 	Database& operator=(Database&& o);
 #endif
 
+	bool CS_get_exact_entry(const std::string & key, std::string & tag) const;
+
 	/** Re-open the database.
 	 *
 	 *  This re-opens the database(s) to the latest available version(s).
@@ -899,6 +901,8 @@ class XAPIAN_VISIBILITY_DEFAULT WritableDatabase : public Database {
 	    // any changes made to it.
 	    Database::add_database(other);
 	}
+
+	void CS_add(const std::string& key, const std::string& tag);
 
 	/** Commit any pending modifications made to the database.
 	 *

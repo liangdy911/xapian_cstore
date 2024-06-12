@@ -398,6 +398,9 @@ class Database::Internal : public Xapian::Internal::intrusive_base {
 	// Modifying the database:
 	// =======================
 
+	virtual bool CS_get_exact_entry(const std::string & key, std::string & tag) const;
+	virtual void CS_add(const std::string& key, const std::string& tag);
+
 	/** Commit pending modifications to the database.
 	 *
 	 *  See WritableDatabase::commit() for more information.

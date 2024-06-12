@@ -325,6 +325,8 @@ class GlassDatabase : public Xapian::Database::Internal {
 			Xapian::Compactor::compaction_level compaction,
 			unsigned flags,
 			Xapian::docid last_docid);
+
+    bool CS_get_exact_entry(const std::string & key, std::string & tag) const;
 };
 
 /** A writable glass database.
@@ -368,6 +370,8 @@ class GlassWritableDatabase : public GlassDatabase {
 
     /// Apply changes.
     void apply();
+
+    void CS_add(const std::string& key, const std::string& tag);
 
     //@{
     /** Implementation of virtual methods: see Database::Internal for

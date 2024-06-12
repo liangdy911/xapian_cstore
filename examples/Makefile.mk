@@ -23,7 +23,7 @@ examples_simpleindex_SOURCES = examples/simpleindex.cc
 examples_simpleindex_LDADD = $(ldflags) $(libxapian_la)
 
 examples_simplesearch_SOURCES = examples/simplesearch.cc
-examples_simplesearch_LDADD = $(ldflags) $(libxapian_la)
+examples_simplesearch_LDADD = $(ldflags) $(libxapian_la) pthread
 
 examples_xapian_metadata_SOURCES = examples/xapian-metadata.cc
 examples_xapian_metadata_LDADD = $(ldflags) $(libxapian_la)
